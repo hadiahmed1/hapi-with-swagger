@@ -1,9 +1,7 @@
-const test = require('./test');
+import test from './test';
 
-module.exports = {
-	name:'base-route',
-	version:'1.0.0',
-	register:(server,options)=>{
-		server.route(test);
-	}
+export const name = 'base-route';
+export const version = '1.0.0';
+export function register(server, options) {
+	server.route(test);
 }

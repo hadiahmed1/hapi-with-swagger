@@ -1,6 +1,6 @@
-const Hapi = require('@hapi/hapi');
+import { server as _server } from '@hapi/hapi';
 const host = "localhost";
-const server = Hapi.server({
+const server = _server({
     port: 3005,
     host: host,
     routes: {
@@ -15,4 +15,4 @@ const server = Hapi.server({
     }
 });
 
-module.exports = server;
+export default server;

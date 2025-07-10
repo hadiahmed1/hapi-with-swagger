@@ -1,13 +1,13 @@
-const crypto = require('crypto');
-let {users} = require('../fakeDb')
-let fs = require('fs');
+import { randomBytes, scrypt } from 'crypto';
+import { users } from '../fakeDb';
+import { createWriteStream } from 'fs';
 
 async function hash(password) {
     return new Promise((resolve, reject) => {
         // generate random 16 bytes long salt
-        const salt = crypto.randomBytes(16).toString("hex")
+        const salt = randomBytes(16).toString("hex")
 
-        crypto.scrypt(password, salt, 64, (err, derivedKey) => {
+        scrypt(password, salt, 64, (err, derivedKey) => {
             if (err) reject(err);
             resolve(salt + ":" + derivedKey.toString('hex'))
         });
@@ -18,7 +18,7 @@ async function hash(password) {
 async function verify(password, hash) {
     return new Promise((resolve, reject) => {
         const [salt, key] = hash.split(":")
-        crypto.scrypt(password, salt, 64, (err, derivedKey) => {
+        scrypt(password, salt, 64, (err, derivedKey) => {
             if (err) reject(err);
             resolve(key == derivedKey.toString('hex'))
         });
@@ -27,7 +27,7 @@ async function verify(password, hash) {
 
 //Add some details
 
-exports.addDetails = async(req, res)=>{
+export async function addDetails(req, res){
     try {
         const { name, email, password } = req.payload;
 
@@ -54,7 +54,7 @@ exports.addDetails = async(req, res)=>{
 
 //Show All details
 
-exports.showDetails = async(req, res)=>{
+export async function showDetails(req, res){
     try {
 
         let details = {
@@ -71,7 +71,7 @@ exports.showDetails = async(req, res)=>{
 
 //View details
 
-exports.viewDetails = async(req, res)=>{
+export async function viewDetails(req, res){
     try {
 
         let { id } = req.params;
@@ -92,7 +92,7 @@ exports.viewDetails = async(req, res)=>{
 
 //update Details
 
-exports.update = async(req, res)=>{
+export async function update(req, res){
     try {
         const { id, name, email } = req.payload;
 
@@ -117,10 +117,10 @@ exports.update = async(req, res)=>{
 }
 
 
-exports.fileUpload = async(req, res)=>{
+export async function fileUpload(req, res){
     try {
         
-        fs.createWriteStream(__dirname + "../../../uploads/" + req.payload.file.filename)
+        createWriteStream(__dirname + "../../../uploads/" + req.payload.file.filename)
         
         let details = {
             msg: 'File upload successfull'

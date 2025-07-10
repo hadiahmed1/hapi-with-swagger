@@ -1,12 +1,12 @@
 'use strict';
-require('dotenv').config();
-const Inert = require('@hapi/inert');
-const Vision = require('@hapi/vision');
-const HapiSwagger = require('hapi-swagger');
+import 'dotenv/config'
+import Inert from '@hapi/inert';
+import Vision from '@hapi/vision';
+import HapiSwagger from 'hapi-swagger';
 
-const server = require('./config/server');
-const baseRouter = require('./routes');
-const Pack = require('./package');
+import { route, register, events, start, info as _info } from './config/server';
+import baseRouter from './routes';
+import { version as _version } from './package';
 
 
 const init = async () => {
@@ -14,12 +14,12 @@ const init = async () => {
     const swaggerOptions = {
         info:{
             title:'Test API Documentation',
-            version:Pack.version,
+            version:_version,
         },
         schemes: ['http','https']
     }
 
-    server.route({
+    route({
         method: 'GET',
         path: '/',
         handler: (request, h) => {
@@ -29,7 +29,7 @@ const init = async () => {
 
 
     // Adding plugins for swagger docs;
-    await server.register([
+    await register([
         Inert,
         Vision,
         {
@@ -38,17 +38,17 @@ const init = async () => {
         }
     ])
 
-    await server.register(baseRouter,{
+    await register(baseRouter,{
 		routes:{
 			prefix:'/api'
 		}
 	});
 
-    server.events.on('response', function (request) {
+    events.on('response', function (request) {
         console.log(request.info.remoteAddress + ': ' + request.method.toUpperCase() + ' ' + request.path + ' --> ' + request.response.statusCode);
     });
-    await server.start();
-    console.log('Server running on %s', server.info.uri);
+    await start();
+    console.log('Server running on %s', _info.uri);
 };
 
 process.on('unhandledRejection', (err) => {

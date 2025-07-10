@@ -1,20 +1,20 @@
-const Joi = require('joi');
-const Test = require('../../controllers/Test');
+import { object, string, number, any } from 'joi';
+import { addDetails, showDetails, viewDetails, update, fileUpload } from '../../controllers/Test';
 
 const router = [
     {
         path:'/add',
 		method:'POST',
 		options:{
-			handler: Test.addDetails,
+			handler: addDetails,
             description:"Add some details",
         	notes:'Add and see the result',
             tags:['api'],
             validate: {
-                payload: Joi.object({
-                    name:  Joi.string().required(),
-                    email:  Joi.string().email().required(),
-                    password: Joi.string().required()
+                payload: object({
+                    name:  string().required(),
+                    email:  string().email().required(),
+                    password: string().required()
                 })
             },
 		}
@@ -22,7 +22,7 @@ const router = [
         path: '/show-all-details',
         method: 'GET',
         options: {
-            handler: Test.showDetails,
+            handler: showDetails,
             description:"Show all details",
         	notes:'Show details',
             tags:['api'],
@@ -31,13 +31,13 @@ const router = [
         path: '/view/{id}',
         method: 'GET',
         options: {
-            handler: Test.viewDetails,
+            handler: viewDetails,
             description:"View all details",
         	notes:'View',
             tags:['api'],
             validate: {
-                params: Joi.object({
-                    id: Joi.number().required()
+                params: object({
+                    id: number().required()
                 })
             }
         }
@@ -45,15 +45,15 @@ const router = [
         path:'/update',
 		method:'POST',
 		options:{
-			handler: Test.update,
+			handler: update,
             description:"Add some details",
         	notes:'Add and see the result',
             tags:['api'],
             validate: {
-                payload: Joi.object({
-                    id: Joi.number().required(),
-                    name:  Joi.string().required(),
-                    email:  Joi.string().email().required()
+                payload: object({
+                    id: number().required(),
+                    name:  string().required(),
+                    email:  string().email().required()
                 })
             },
 		}
@@ -65,7 +65,7 @@ const router = [
                 output: 'file',
                 multipart: true
             },
-			handler: Test.fileUpload,
+			handler: fileUpload,
             description:"File upload",
         	notes:'file-upload',
         	tags:['api'],
@@ -75,8 +75,8 @@ const router = [
                 }
             },
             validate: {
-                payload: Joi.object({
-                    file: Joi.any()
+                payload: object({
+                    file: any()
                         .meta({ swaggerType: 'file' })
                         .description('file')
                 })
@@ -85,4 +85,4 @@ const router = [
     }
 ]
 
-module.exports = router;
+export default router;
